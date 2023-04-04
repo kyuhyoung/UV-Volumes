@@ -24,6 +24,7 @@ def _dataset_factory(is_train):
 
 
 def make_dataset(cfg, dataset_name, transforms, is_train=True):
+    #print(f'dataset_name : {dataset_name}');    exit()
     dataset = _dataset_factory(is_train)
     return dataset
 
@@ -78,7 +79,6 @@ def make_data_loader(cfg, is_train=True, is_distributed=False, max_iter=-1):
         drop_last = False
 
     dataset_name = cfg.train.dataset if is_train else cfg.test.dataset
-
     transforms = make_transforms(cfg, is_train)
     dataset = make_dataset(cfg, dataset_name, transforms, is_train)
     sampler = make_data_sampler(dataset, shuffle, is_distributed, is_train)

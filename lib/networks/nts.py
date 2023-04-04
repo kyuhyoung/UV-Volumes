@@ -1,6 +1,9 @@
 # from curses import window
 import torch.nn as nn
-import spconv
+#import spconv
+from spconv.pytorch.modules import SparseSequential
+from spconv.pytorch.conv import SubMConv3d, SparseConv3d
+from spconv.pytorch.core import SparseConvTensor
 import torch.nn.functional as F
 import torch
 from lib.config import cfg
@@ -32,7 +35,8 @@ class Network(nn.Module):
         batch_size = sp_input['batch_size']
 
         code = self.c(torch.arange(0, cfg.nv).to(coord.device))
-        xyzc = spconv.SparseConvTensor(code, coord, out_sh, batch_size)
+        #xyzc = spconv.SparseConvTensor(code, coord, out_sh, batch_size)
+        xyzc = SparseConvTensor(code, coord, out_sh, batch_size)
         feature_volume = self.xyzc_net(xyzc)
 
         return feature_volume
@@ -171,8 +175,10 @@ class SparseConvNet_64(nn.Module):
         return volumes
 
 def single_conv(in_channels, out_channels, indice_key=None):
-    return spconv.SparseSequential(
-        spconv.SubMConv3d(in_channels,
+    #return spconv.SparseSequential(
+    return SparseSequential(
+        #spconv.SubMConv3d(in_channels,
+        SubMConv3d(in_channels,
                           out_channels,
                           1,
                           bias=False,
@@ -182,15 +188,18 @@ def single_conv(in_channels, out_channels, indice_key=None):
     )
 
 def double_conv(in_channels, out_channels, indice_key=None):
-    return spconv.SparseSequential(
-        spconv.SubMConv3d(in_channels,
+    #return spconv.SparseSequential(
+    return SparseSequential(
+        #spconv.SubMConv3d(in_channels,
+        SubMConv3d(in_channels,
                           out_channels,
                           3,
                           bias=False,
                           indice_key=indice_key),
         nn.BatchNorm1d(out_channels, eps=1e-3, momentum=0.01),
         nn.ReLU(),
-        spconv.SubMConv3d(out_channels,
+        #spconv.SubMConv3d(out_channels,
+        SubMConv3d(out_channels,
                           out_channels,
                           3,
                           bias=False,
@@ -200,22 +209,26 @@ def double_conv(in_channels, out_channels, indice_key=None):
     )
 
 def triple_conv(in_channels, out_channels, indice_key=None):
-    return spconv.SparseSequential(
-        spconv.SubMConv3d(in_channels,
+    #return spconv.SparseSequential(
+    return SparseSequential(
+        #spconv.SubMConv3d(in_channels,
+        SubMConv3d(in_channels,
                           out_channels,
                           3,
                           bias=False,
                           indice_key=indice_key),
         nn.BatchNorm1d(out_channels, eps=1e-3, momentum=0.01),
         nn.ReLU(),
-        spconv.SubMConv3d(out_channels,
+        #spconv.SubMConv3d(out_channels,
+        SubMConv3d(out_channels,
                           out_channels,
                           3,
                           bias=False,
                           indice_key=indice_key),
         nn.BatchNorm1d(out_channels, eps=1e-3, momentum=0.01),
         nn.ReLU(),
-        spconv.SubMConv3d(out_channels,
+        #spconv.SubMConv3d(out_channels,
+        SubMConv3d(out_channels,
                           out_channels,
                           3,
                           bias=False,
@@ -225,8 +238,10 @@ def triple_conv(in_channels, out_channels, indice_key=None):
     )
 
 def stride_conv(in_channels, out_channels, indice_key=None):
-    return spconv.SparseSequential(
-        spconv.SparseConv3d(in_channels,
+    #return spconv.SparseSequential(
+    return SparseSequential(
+        #spconv.SparseConv3d(in_channels,
+        SparseConv3d(in_channels,
                             out_channels,
                             3,
                             2,

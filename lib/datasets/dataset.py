@@ -67,6 +67,7 @@ class Dataset(data.Dataset):
         # read xyz, normal, color from the ply file
         vertices_path = os.path.join(self.data_root, cfg.vertices,
                                      '{}.npy'.format(i))
+        #print(f'vertices_path : {vertices_path}');  exit()
         xyz = np.load(vertices_path).astype(np.float32)
 
         # obtain the original bounds for point sampling

@@ -137,6 +137,7 @@ cfg.evaluate = 'evaluate'
 cfg.save_frame = 1
 
 def parse_cfg(cfg, args):
+    #print(f'cfg.gpus : {cfg.gpus}');    exit()
     if len(cfg.task) == 0:
         raise ValueError('task must be specified')
 
